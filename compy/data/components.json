@@ -1,0 +1,347 @@
+[
+  {
+    "id": "button",
+    "name": "Button",
+    "category": "Actions",
+    "description": "A button is used to trigger an action, such as submitting, saving, confirming, cancelling, or starting a task.",
+    "useCases": [
+      "submit a form",
+      "save changes",
+      "confirm an action",
+      "cancel an action",
+      "trigger a command",
+      "start a workflow",
+      "perform an immediate action"
+    ],
+    "notRecommendedFor": [
+      "navigating to another page without performing an action",
+      "displaying static information",
+      "showing temporary feedback",
+      "grouping large amounts of content",
+      "asking the user to read detailed information before deciding"
+    ],
+    "recommendationNotes": [
+      "Use a button when the user is expected to perform an action.",
+      "Use clear action-focused labels such as Save, Submit, Delete, Cancel, or Continue.",
+      "For destructive actions, pair the button with a confirmation pattern such as a dialog."
+    ],
+    "example": "<zeta-button flavor=\"primary\" name shape=\"rounded\" value size=\"medium\">Button</zeta-button>",
+    "attributes": [
+        {
+            "name": "leadingIcon",
+            "description": "Icon shown before the button text.",
+            "type": "ZetaIconName | null",
+            "default": null
+        },
+        {
+            "name": "trailingIcon",
+            "description": "Icon shown after the button text.",
+            "type": "ZetaIconName | null",
+            "default": null
+        },
+        {
+            "name": "flavor",
+            "description": "Determines the visual style of the button.",
+            "type": "primary | positive | negative | outline | outline-subtle | text | subtle",
+            "default": "primary"
+        },
+        {
+            "name": "shape",
+            "description": "Controls whether the button is sharp, rounded, or fully rounded.",
+            "type": "sharp | rounded | full",
+            "default": "rounded"
+        },
+        {
+            "name": "size",
+            "description": "Controls the size of the button.",
+            "type": "SizeType",
+            "default": "medium"
+        },
+        {
+            "name": "disabled",
+            "description": "Disables the button and applies disabled styling.",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "name": "type",
+            "description": "The button type when used inside a form.",
+            "type": "submit | reset | button | undefined",
+            "default": "undefined"
+        },
+        {
+            "name": "name",
+            "description": "Name for the button when used in a form.",
+            "type": "string | undefined",
+            "default": "undefined"
+        },
+        {
+            "name": "value",
+            "description": "Value submitted with the button's name when used in a form.",
+            "type": "string | undefined",
+            "default": "undefined"
+        }
+    ],
+    "slots": [
+        {
+            "name": "default",
+            "description": "Content shown inside the button, usually text.",
+            "type": "text"
+        }
+    ],
+    "keywords": [
+      "button",
+      "action",
+      "submit",
+      "save",
+      "cancel",
+      "confirm",
+      "delete",
+      "continue",
+      "primary action",
+      "secondary action",
+      "cta",
+      "call to action"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/Buttons/Button/"
+  },
+  {
+    "id": "dialog",
+    "name": "Dialog",
+    "category": "Feedback and overlays",
+    "description": "A dialog is a reusable modal or non-modal window used to get the user's attention, present important information, or ask the user to make a decision.",
+    "useCases": [
+      "confirm a destructive action",
+      "ask the user to make an important decision",
+      "show a blocking warning",
+      "display focused content above the current page",
+      "collect a small amount of information in a modal flow",
+      "interrupt the user when their attention is required"
+    ],
+    "notRecommendedFor": [
+      "temporary success messages",
+      "low-priority feedback",
+      "non-blocking status updates",
+      "content that should live naturally on the page",
+      "simple actions that do not need confirmation"
+    ],
+    "recommendationNotes": [
+      "Use a modal dialog for most cases where the user must respond before continuing.",
+      "Use a dialog when the user needs to confirm, cancel, or make a clear choice.",
+      "Avoid using dialogs for minor feedback because they interrupt the user's flow."
+    ],
+    "example": "<zeta-dialog id=\"dialog1\" flavor=\"default\">\n  Dialog content goes here.\n  <zeta-icon slot=\"icon\" rounded></zeta-icon>\n  <zeta-button slot=\"confirm\" size=\"medium\" shape=\"sharp\" flavor=\"primary\">Confirm</zeta-button>\n  <zeta-button slot=\"cancel\" size=\"medium\" shape=\"sharp\" flavor=\"outline-subtle\">Cancel</zeta-button>\n  <zeta-button slot=\"other\" size=\"medium\" shape=\"sharp\" flavor=\"text\">Other</zeta-button>\n</zeta-dialog>",
+    "attributes": [
+        {
+            "name": "title",
+            "description": "Title of the dialog.",
+            "type": "undefined",
+            "default": "undefined"
+        },
+        {
+            "name": "centered",
+            "description": "Whether the dialog content/header is centered.",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "name": "initialOpen",
+            "description": "Whether the dialog is initially open.",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "name": "showLeadingIcon",
+            "description": "Whether to show a leading icon in the dialog header.",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "name": "leadingIcon",
+            "description": "Icon to display in the dialog header.",
+            "type": "ZetaIconName | undefined",
+            "default": "undefined"
+        },
+        {
+            "name": "flavor",
+            "description": "The type of dialog. Changes the icon and icon colour shown in the header.",
+            "type": "default | info | success | warning | error",
+            "default": "default"
+        },
+        {
+            "name": "confirmButtonFlavor",
+            "description": "Colour style of the confirm button.",
+            "type": "primary | positive | negative",
+            "default": "primary"
+        },
+        {
+            "name": "rounded",
+            "description": "Whether the component uses rounded or sharp styling.",
+            "type": "boolean | undefined",
+            "default": true
+        },
+        {
+            "name": "returnValue",
+            "description": "Return value of the dialog.",
+            "type": "string",
+            "default": ""
+        },
+        {
+            "name": "closeOnBarrierClicked",
+            "description": "Whether the modal should close when the background barrier is clicked.",
+            "type": "boolean",
+            "default": true
+        },
+        {
+            "name": "open",
+            "description": "Whether the dialog is open or closed.",
+            "type": "undefined",
+            "default": "undefined"
+        }
+    ],
+    "slots": [
+        {
+            "name": "default",
+            "description": "Body content of the dialog, usually text.",
+            "type": "text"
+        },
+        {
+            "name": "confirm",
+            "description": "Button used in the footer for the main confirm action.",
+            "type": "zeta-button"
+        },
+        {
+            "name": "cancel",
+            "description": "Button used in the footer for the cancel action.",
+            "type": "zeta-button"
+        },
+        {
+            "name": "other",
+            "description": "Optional extra footer button.",
+            "type": "zeta-button"
+        }
+    ],
+    "keywords": [
+      "dialog",
+      "modal",
+      "popup",
+      "confirm",
+      "confirmation",
+      "delete",
+      "destructive",
+      "warning",
+      "decision",
+      "blocking",
+      "overlay",
+      "attention"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/Dialog/"
+  },
+  {
+    "id": "dropdown-menu",
+    "name": "Dropdown Menu",
+    "category": "Selection",
+    "description": "A dropdown menu allows users to select an option from a list that appears when the menu is clicked or tapped.",
+    "useCases": [
+        "select one option from a list",
+        "choose from multiple options",
+        "save space when showing all options would clutter the UI",
+        "choose a status",
+        "choose a category",
+        "choose a filter option",
+        "show a menu of selectable items"
+    ],
+    "notRecommendedFor": [
+        "a single clear action with no alternatives",
+        "critical destructive actions that require confirmation",
+        "temporary feedback messages",
+        "displaying static information",
+        "showing a very small set of options where radio buttons would be easier to scan",
+        "triggering a primary action without requiring a selection"
+    ],
+    "recommendationNotes": [
+        "Use a dropdown menu when users need to select from a list of options while keeping the interface compact.",
+        "If all options should be visible and there are only a few choices, radio buttons may be easier for users to compare.",
+        "If the user needs to confirm a destructive action, use a dialog instead.",
+        "The dropdown menu can be configured as a text dropdown, checkbox dropdown, or radio dropdown."
+    ],
+    "example": "<zeta-dropdown-menu-button name=\"dropdown-menu\" rounded size=\"small\" flavor=\"primary\">\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 1</zeta-dropdown-menu-item>\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 2</zeta-dropdown-menu-item>\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 3</zeta-dropdown-menu-item>\n</zeta-dropdown-menu-button>",
+    "attributes": [
+        {
+        "name": "matchParentWidth",
+        "description": "Whether the dropdown menu should match the width of its parent.",
+        "type": "boolean",
+        "default": true
+        },
+        {
+        "name": "buttonTextMatchesSelected",
+        "description": "Whether the button text should update to match the selected item. Only applies to the text-dropdown type.",
+        "type": "boolean",
+        "default": true
+        },
+        {
+        "name": "defaultText",
+        "description": "The default text to display when no item is selected.",
+        "type": "string",
+        "default": ""
+        },
+        {
+        "name": "open",
+        "description": "Controls whether the dropdown menu is open.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "type",
+        "description": "The type of dropdown menu.",
+        "type": "text-dropdown | checkbox-dropdown | radio-dropdown",
+        "default": "text-dropdown"
+        },
+        {
+        "name": "direction",
+        "description": "The direction of the droppable relative to the anchor.",
+        "type": "left | right | bottom | top",
+        "default": "bottom"
+        },
+        {
+        "name": "flavor",
+        "description": "The flavor of the dropdown button.",
+        "type": "primary | positive | negative | outline | outline-subtle | text | subtle",
+        "default": "primary"
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component uses rounded or sharp styling.",
+        "type": "boolean",
+        "default": true
+        },
+        {
+        "name": "size",
+        "description": "The size of the component.",
+        "type": "SizeType",
+        "default": "medium"
+        }
+    ],
+    "keywords": [
+        "dropdown",
+        "dropdown menu",
+        "dropdown menu button",
+        "select",
+        "selection",
+        "choose",
+        "choice",
+        "option",
+        "options",
+        "menu",
+        "list",
+        "picker",
+        "filter",
+        "status",
+        "category",
+        "radio dropdown",
+        "checkbox dropdown",
+        "text dropdown"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/DropdownMenu/"
+  }
+]
