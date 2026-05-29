@@ -1,7 +1,6 @@
 import { AgentDeps, runAgent } from '../../agent/index.js';
 import { conversationStore } from '../../thread-context/index.js';
 import { buildFeedbackBlocks } from '../views/feedback-builder.js';
-import { recommendComponent, generateComponentResponse } from '../../services/componentService.js';
 import { replyWithComponentRecommendation } from '../../services/componentResponseService.js';
 
 /**

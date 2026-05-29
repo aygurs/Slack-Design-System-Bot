@@ -2,28 +2,11 @@
   {
     "id": "button",
     "name": "Button",
-    "category": "Actions",
     "description": "A button is used to trigger an action, such as submitting, saving, confirming, cancelling, or starting a task.",
     "useCases": [
-      "submit a form",
-      "save changes",
-      "confirm an action",
-      "cancel an action",
-      "trigger a command",
-      "start a workflow",
-      "perform an immediate action"
-    ],
-    "notRecommendedFor": [
-      "navigating to another page without performing an action",
-      "displaying static information",
-      "showing temporary feedback",
-      "grouping large amounts of content",
-      "asking the user to read detailed information before deciding"
-    ],
-    "recommendationNotes": [
-      "Use a button when the user is expected to perform an action.",
-      "Use clear action-focused labels such as Save, Submit, Delete, Cancel, or Continue.",
-      "For destructive actions, pair the button with a confirmation pattern such as a dialog."
+      "submitting a form",
+      "saving changes",
+      "confirming an action"
     ],
     "example": "<zeta-button flavor=\"primary\" name shape=\"rounded\" value size=\"medium\">Button</zeta-button>",
     "attributes": [
@@ -108,27 +91,11 @@
   {
     "id": "dialog",
     "name": "Dialog",
-    "category": "Feedback and overlays",
     "description": "A dialog is a reusable modal or non-modal window used to get the user's attention, present important information, or ask the user to make a decision.",
     "useCases": [
-      "confirm a destructive action",
-      "ask the user to make an important decision",
-      "show a blocking warning",
-      "display focused content above the current page",
-      "collect a small amount of information in a modal flow",
-      "interrupt the user when their attention is required"
-    ],
-    "notRecommendedFor": [
-      "temporary success messages",
-      "low-priority feedback",
-      "non-blocking status updates",
-      "content that should live naturally on the page",
-      "simple actions that do not need confirmation"
-    ],
-    "recommendationNotes": [
-      "Use a modal dialog for most cases where the user must respond before continuing.",
-      "Use a dialog when the user needs to confirm, cancel, or make a clear choice.",
-      "Avoid using dialogs for minor feedback because they interrupt the user's flow."
+      "confirming a destructive action",
+      "asking the user to make an important decision",
+      "showing a blocking warning"
     ],
     "example": "<zeta-dialog id=\"dialog1\" flavor=\"default\">\n  Dialog content goes here.\n  <zeta-icon slot=\"icon\" rounded></zeta-icon>\n  <zeta-button slot=\"confirm\" size=\"medium\" shape=\"sharp\" flavor=\"primary\">Confirm</zeta-button>\n  <zeta-button slot=\"cancel\" size=\"medium\" shape=\"sharp\" flavor=\"outline-subtle\">Cancel</zeta-button>\n  <zeta-button slot=\"other\" size=\"medium\" shape=\"sharp\" flavor=\"text\">Other</zeta-button>\n</zeta-dialog>",
     "attributes": [
@@ -240,30 +207,11 @@
   {
     "id": "dropdown-menu",
     "name": "Dropdown Menu",
-    "category": "Selection",
     "description": "A dropdown menu allows users to select an option from a list that appears when the menu is clicked or tapped.",
     "useCases": [
-        "select one option from a list",
-        "choose from multiple options",
-        "save space when showing all options would clutter the UI",
-        "choose a status",
-        "choose a category",
-        "choose a filter option",
-        "show a menu of selectable items"
-    ],
-    "notRecommendedFor": [
-        "a single clear action with no alternatives",
-        "critical destructive actions that require confirmation",
-        "temporary feedback messages",
-        "displaying static information",
-        "showing a very small set of options where radio buttons would be easier to scan",
-        "triggering a primary action without requiring a selection"
-    ],
-    "recommendationNotes": [
-        "Use a dropdown menu when users need to select from a list of options while keeping the interface compact.",
-        "If all options should be visible and there are only a few choices, radio buttons may be easier for users to compare.",
-        "If the user needs to confirm a destructive action, use a dialog instead.",
-        "The dropdown menu can be configured as a text dropdown, checkbox dropdown, or radio dropdown."
+        "selecting one option from a list",
+        "choosing from multiple options",
+        "saving space when showing all options would clutter the UI"
     ],
     "example": "<zeta-dropdown-menu-button name=\"dropdown-menu\" rounded size=\"small\" flavor=\"primary\">\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 1</zeta-dropdown-menu-item>\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 2</zeta-dropdown-menu-item>\n  <zeta-dropdown-menu-item rounded size=\"medium\">Option 3</zeta-dropdown-menu-item>\n</zeta-dropdown-menu-button>",
     "attributes": [
@@ -343,5 +291,452 @@
         "text dropdown"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/DropdownMenu/"
-  }
+  },
+  {
+    "id": "avatar",
+    "name": "Avatar",
+    "description": "An avatar is a visual representation of a user or entity.",
+    "useCases": [
+        "showing a user profile image",
+        "showing user initials",
+        "representing a person or entity"
+    ],
+    "example": "<zeta-avatar size=\"m\">\n  AG\n</zeta-avatar>",
+    "attributes": [
+        {
+        "name": "show-ring",
+        "description": "Shows the ring around the avatar.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "show-close",
+        "description": "Shows the close icon.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "size",
+        "description": "The size of the avatar.",
+        "type": "xxxs | xxs | xs | s | m | l | xl | xxl | xxxl | undefined",
+        "default": "undefined"
+        }
+    ],
+    "slots": [
+        {
+        "name": "default",
+        "description": "The content of the avatar. Should be an img element, a zeta-icon, or text.",
+        "type": "text"
+        },
+        {
+        "name": "status",
+        "description": "The content of the status slot. Usually used for indicators or badges.",
+        "type": "text"
+        }
+    ],
+    "keywords": [
+        "avatar",
+        "profile",
+        "profile picture",
+        "user",
+        "user image",
+        "initials",
+        "person",
+        "entity",
+        "account",
+        "contact",
+        "badge",
+        "status"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/Avatar/"
+    },
+    {
+    "id": "checkbox",
+    "name": "Checkbox",
+    "description": "Checkboxes allow users to select one or more items from a set, or turn an option on or off.",
+    "useCases": [
+        "selecting one or more options",
+        "turning a setting on or off",
+        "choosing multiple items from a list"
+    ],
+    "example": "<zeta-checkbox name=\"terms\" value=\"accepted\">\n  I agree to the terms\n</zeta-checkbox>",
+    "attributes": [
+        {
+        "name": "reverse",
+        "description": "Whether the order of the checkbox and its label should be reversed.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "name",
+        "description": "The name of the form control.",
+        "type": "string",
+        "default": ""
+        },
+        {
+        "name": "required",
+        "description": "Indicates whether the form control is required before submitting the form.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "value",
+        "description": "The value submitted when the checkbox is part of a form.",
+        "type": "string | null",
+        "default": null
+        },
+        {
+        "name": "checked",
+        "description": "The checked state of the checkbox.",
+        "type": "boolean",
+        "default": "undefined"
+        },
+        {
+        "name": "indeterminate",
+        "description": "A mixed or unknown checkbox state.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "disabled",
+        "description": "Disables the checkbox and applies disabled styles.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "size",
+        "description": "Size of the component.",
+        "type": "SizeType",
+        "default": "medium"
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component is rounded or sharp.",
+        "type": "boolean | undefined",
+        "default": true
+        }
+    ],
+    "slots": [
+        {
+        "name": "default",
+        "description": "The label/content shown next to the checkbox.",
+        "type": "text"
+        }
+    ],
+    "keywords": [
+        "checkbox",
+        "check box",
+        "checked",
+        "unchecked",
+        "indeterminate",
+        "multiple selection",
+        "multi select",
+        "select many",
+        "toggle option",
+        "terms",
+        "agree",
+        "form control"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/Checkbox/"
+    },
+    {
+    "id": "assist-chip",
+    "name": "Assist Chip",
+    "description": "Assist chips are compact chips that can be clickable, selectable, and draggable.",
+    "useCases": [
+        "showing a compact helper action",
+        "displaying a small clickable option",
+        "representing a lightweight contextual action"
+    ],
+    "example": "<zeta-assist-chip icon=\"star\">\n  Assist chip\n</zeta-assist-chip>",
+    "attributes": [
+        {
+        "name": "icon",
+        "description": "Icon shown in the chip.",
+        "type": "ZetaIconName | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "disabled",
+        "description": "Disables the chip and applies disabled styles.",
+        "type": "boolean",
+        "default": false
+        },
+        {
+        "name": "tabIndex",
+        "description": "The tab index used to determine focus order.",
+        "type": "number",
+        "default": 0
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component is rounded or sharp.",
+        "type": "boolean | undefined",
+        "default": true
+        }
+    ],
+    "slots": [
+        {
+        "name": "default",
+        "description": "The content of the chip.",
+        "type": "text"
+        }
+    ],
+    "keywords": [
+        "assist chip",
+        "chip",
+        "chips",
+        "clickable chip",
+        "selectable chip",
+        "draggable chip",
+        "compact action",
+        "small action",
+        "label",
+        "tag",
+        "icon chip"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/Chips/AssistChip/"
+    },
+    {
+    "id": "empty-state",
+    "name": "Empty State",
+    "description": "Empty states are used to communicate that no data is available for display, such as no results, first use, no data, or user-cleared states.",
+    "useCases": [
+        "showing no search results",
+        "showing an empty list or table",
+        "explaining a first-use state"
+    ],
+    "example": "<zeta-empty-state title=\"No results found\" description=\"Try adjusting your filters.\">\n  <zeta-button slot=\"primaryAction\" flavor=\"primary\">Clear filters</zeta-button>\n  <zeta-button slot=\"secondaryAction\" flavor=\"outline-subtle\">Go back</zeta-button>\n</zeta-empty-state>",
+    "attributes": [
+        {
+        "name": "title",
+        "description": "Title of the empty state.",
+        "type": "string",
+        "default": "undefined"
+        },
+        {
+        "name": "description",
+        "description": "Description of the empty state.",
+        "type": "string",
+        "default": "undefined"
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component is rounded or sharp.",
+        "type": "boolean | undefined",
+        "default": true
+        }
+    ],
+    "slots": [
+        {
+        "name": "primaryAction",
+        "description": "Primary action button. Should be a zeta-button.",
+        "type": "text"
+        },
+        {
+        "name": "secondaryAction",
+        "description": "Secondary action button. Should be a zeta-button.",
+        "type": "text"
+        },
+        {
+        "name": "illustration",
+        "description": "Illustration to display in the empty state. Should be a zeta-illustration.",
+        "type": "text"
+        },
+        {
+        "name": "title",
+        "description": "Title of the empty state. Should be an h4 element.",
+        "type": "text"
+        },
+        {
+        "name": "description",
+        "description": "Description of the empty state. Should be a p element.",
+        "type": "text"
+        }
+    ],
+    "keywords": [
+        "empty state",
+        "empty",
+        "no results",
+        "no data",
+        "first use",
+        "user cleared",
+        "blank state",
+        "empty list",
+        "empty table",
+        "nothing to show",
+        "clear filters"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/EmptyState/"
+    },
+    {
+    "id": "global-header",
+    "name": "Global Header",
+    "description": "The global header is the topmost persistent navigation bar across an application. It can contain branding, primary navigation, search, user profile access, and global actions.",
+    "useCases": [
+        "showing application-wide navigation",
+        "displaying product branding",
+        "providing global search"
+    ],
+    "example": "<zeta-global-header platformName=\"Device Manager\" name=\"Aydin\" initials=\"AG\" appSwitcher searchbar>\n  <span slot=\"platform-name\">Device Manager</span>\n</zeta-global-header>",
+    "attributes": [
+        {
+        "name": "data-theme",
+        "description": "Autosets the theme to dark mode for this component.",
+        "type": "string",
+        "default": "dark"
+        },
+        {
+        "name": "platformName",
+        "description": "The platform name text on the header.",
+        "type": "string | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "name",
+        "description": "The name to show in the header, next to the user icon.",
+        "type": "String",
+        "default": "Name"
+        },
+        {
+        "name": "initials",
+        "description": "The initials to display within the user icon.",
+        "type": "String",
+        "default": "RK"
+        },
+        {
+        "name": "appSwitcher",
+        "description": "Shows the app switcher icon.",
+        "type": "Boolean",
+        "default": false
+        },
+        {
+        "name": "searchbar",
+        "description": "Shows the search bar.",
+        "type": "Boolean",
+        "default": false
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component is rounded or sharp.",
+        "type": "boolean | undefined",
+        "default": true
+        }
+    ],
+    "slots": [
+        {
+        "name": "platform-name",
+        "description": "Slot for the platform name in the header. Falls back to the platformName property if not provided.",
+        "type": "text"
+        },
+        {
+        "name": "menu-items",
+        "description": "Slot for menu items on the left side of the header. Expects zeta-button or zeta-dropdown-menu-button elements.",
+        "type": "text"
+        },
+        {
+        "name": "action-items",
+        "description": "Slot for action items on the right side of the header. Expects zeta-icon-button or zeta-action-menu-button elements.",
+        "type": "text"
+        },
+        {
+        "name": "user-avatar",
+        "description": "Slot for user avatar. Input should be zeta-avatar with size set to xxs.",
+        "type": "text"
+        },
+        {
+        "name": "logo",
+        "description": "Slot for a custom logo to replace the default Zebra logo.",
+        "type": "text"
+        }
+    ],
+    "keywords": [
+        "global header",
+        "header",
+        "top navigation",
+        "navigation bar",
+        "navbar",
+        "branding",
+        "logo",
+        "search",
+        "user profile",
+        "app switcher",
+        "global actions",
+        "persistent navigation"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/GlobalHeader/"
+    },
+    {
+    "id": "progress-bar",
+    "name": "Progress Bar",
+    "description": "Progress bars express an unspecified wait time or display the length of a process.",
+    "useCases": [
+        "showing progress through a process",
+        "showing upload or download progress",
+        "showing task completion percentage"
+    ],
+    "example": "<zeta-progress-bar value=\"0.5\" label=\"Uploading\" size=\"medium\"></zeta-progress-bar>",
+    "attributes": [
+        {
+        "name": "size",
+        "description": "The size of the progress indicator. Can be medium or thin.",
+        "type": "thin | medium",
+        "default": "medium"
+        },
+        {
+        "name": "indeterminate",
+        "description": "Displays the indeterminate progress indicator. If true, value is ignored.",
+        "type": "boolean | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "value",
+        "description": "The percent complete. Use a floating point number between 0.0 and 1.0, unless maxValue is set.",
+        "type": "number",
+        "default": 0
+        },
+        {
+        "name": "maxValue",
+        "description": "If maxValue is null, value is treated as a percentage. Otherwise value can be any number between 0 and maxValue.",
+        "type": "number | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "label",
+        "description": "The label for the progress indicator.",
+        "type": "string | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "buffering",
+        "description": "Displays buffering dots at the end of the progress indicator. Pauses animation if indeterminate is true.",
+        "type": "boolean | undefined",
+        "default": "undefined"
+        },
+        {
+        "name": "rounded",
+        "description": "Whether the component is rounded or sharp.",
+        "type": "boolean | undefined",
+        "default": true
+        }
+    ],
+    "slots": [],
+    "keywords": [
+        "progress bar",
+        "progress",
+        "loading",
+        "loader",
+        "wait",
+        "waiting",
+        "upload",
+        "download",
+        "percentage",
+        "completion",
+        "indeterminate",
+        "buffering",
+        "process",
+        "task progress"
+    ],
+    "docsUrl": "https://design.zebra.com/docs/Components/ProgressIndicator/ProgressBar/"
+    }
 ]

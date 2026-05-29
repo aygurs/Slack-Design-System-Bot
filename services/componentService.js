@@ -4,7 +4,7 @@ import path from 'node:path';
 // Get the path for the components.json file
 const componentJsonFilePath = path.join(process.cwd(), 'data', 'components.json');
 
-// Turn JSON data into JS objects we can work with
+/** Reads the components.json file and returns the array of components */
 export function readComponentJson() {
     const file = fs.readFileSync(componentJsonFilePath, 'utf-8');
     return JSON.parse(file);
@@ -20,11 +20,8 @@ function componentObjectToString(component) {
     const componentDetails = [
     component.id,
     component.name,
-    component.category,
     component.description,
     ...(component.useCases || []),
-    ...(component.notRecommendedFor || []),
-    ...(component.recommendationNotes || []),
     ...(component.keywords || [])
     ];
 
@@ -59,7 +56,7 @@ function calculateComponentMatchScore(component, userQuestion) {
     return score;
 }
 
-// Returns a list of components that match the user's question, sorted by best match first
+/** Returns a list of components that match the user's question, sorted by best match first */
 export function componentsWithScores(userQuestion) {
     const components = readComponentJson();
 
@@ -79,7 +76,7 @@ export function componentsWithScores(userQuestion) {
     return matchingComponents;
 }
 
-// Returns the single best matching component for the user's question, or null if no good match is found
+/** Returns the single best matching component for the user's question, or null if no good match is found */
 export function recommendComponent(userQuestion) {
     const results = componentsWithScores(userQuestion);
 
@@ -88,48 +85,4 @@ export function recommendComponent(userQuestion) {
     }
 
     return results[0];
-}
-
-// Generates a response message based on the recommended component and the user's original question
-export function generateComponentResponse(component, userQuestion) {
-
-    // If no good match is found, return a message saying so
-    if (!component) {
-        return [
-            `I couldn't find a good component match for: "${userQuestion}"`,
-            '',
-            'Try asking something like:',
-            '• "I need users to confirm deleting something"',
-            '• "I need a save button"',
-            '• "I need users to choose from a list"'
-        ].join('\n');
-    }
-
-    const topUseCases = (component.useCases || [])
-        .slice(0, 3)
-        .map((useCase) => `• ${useCase}`)
-        .join('\n');
-
-    const topNotRecommendedFor = (component.notRecommendedFor || [])
-        .slice(0, 3)
-        .map((item) => `• ${item}`)
-        .join('\n');
-
-    return [
-        `*Recommended component:* ${component.name}`,
-        '',
-        component.description,
-        '',
-        '*Good for:*',
-        topUseCases || 'No use cases listed.',
-        '',
-        '*Not recommended for:*',
-        topNotRecommendedFor || 'No guidance listed.',
-        '',
-        '*Example:*',
-        '```',
-        component.example,
-        '```',
-        component.docsUrl ? `*Docs:* ${component.docsUrl}` : ''
-    ].join('\n');
 }

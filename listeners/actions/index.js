@@ -1,4 +1,8 @@
 import { handleFeedbackButton } from './feedback-buttons.js';
+import {
+    handleShowComponentExample,
+    handleShowComponentAttributes
+} from './response-buttons.js';
 
 /**
  * Register action listeners with the Bolt app.
@@ -6,5 +10,6 @@ import { handleFeedbackButton } from './feedback-buttons.js';
  * @returns {void}
  */
 export function register(app) {
-  app.action('feedback', handleFeedbackButton);
+  app.action('show_component_example', handleShowComponentExample);
+  app.action('show_component_attributes', handleShowComponentAttributes);
 }
