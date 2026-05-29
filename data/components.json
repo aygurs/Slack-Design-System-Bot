@@ -355,9 +355,7 @@
         "contact",
         "badge",
         "status",
-        "display",
-        "show",
-        "showing"
+        "display"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Avatar/"
     },

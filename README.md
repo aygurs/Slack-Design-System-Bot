@@ -1,311 +1,360 @@
-# Starter Agent for Slack (Bolt for JavaScript and OpenAI Agents SDK)
+# Compy — Zeta Design System Slack Bot
 
-A minimal starter template for building AI-powered Slack agents with [Bolt for JavaScript](https://docs.slack.dev/tools/bolt-js/) and [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/) using models from [OpenAI](https://openai.com). Works with the [Slack MCP Server](https://github.com/slackapi/slack-mcp-server) to search messages, read channels, send messages, and manage canvases — all from within your agent.
+Compy is a Slack bot that helps teams choose the right component from the Zeta Design System.
 
-## App Overview
+Instead of searching through docs manually, users can ask Compy natural questions like:
 
-The starter agent interacts with users through four entry points:
-
-* **App Home** — Displays a welcome message with instructions on how to interact.
-* **Direct Messages** — Users message the agent directly. It responds in-thread, maintaining context across follow-ups.
-* **Channel @mentions** — Mention the agent in any channel to get a response without leaving the conversation.
-* **Assistant Panel** — Users click _Add Agent_ in Slack, select the agent, and pick from suggested prompts or type a message.
-
-The template also includes one example tool (emoji reactions). Add your own tools to customize it for your use case.
-
-### Slack MCP Server
-
-When connected to the [Slack MCP Server](https://github.com/slackapi/slack-mcp-server), the agent can search messages and files, read channel history and threads, send and schedule messages, and create and update canvases. When deployed with OAuth (HTTP mode), the agent automatically connects to the Slack MCP Server using the user's token.
-
-## Setup
-
-Before getting started, make sure you have a development workspace where you have permissions to install apps.
-
-### Developer Program
-
-Join the [Slack Developer Program](https://api.slack.com/developer-program) for exclusive access to sandbox environments for building and testing your apps, tooling, and resources created to help you build and grow.
-
-### Create the Slack app
-
-<details><summary><strong>Using Slack CLI</strong></summary>
-
-Install the latest version of the Slack CLI for your operating system:
-
-* [Slack CLI for macOS & Linux](https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-mac-and-linux/)
-* [Slack CLI for Windows](https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-windows/)
-
-You'll also need to log in if this is your first time using the Slack CLI.
-
-```sh
-slack login
+```text
+I need users to confirm deleting something
+I need a component for choosing from a list
+What should I use when there are no search results?
 ```
 
-#### Initializing the project
+Compy then recommends a suitable component, explains why it fits, and provides quick actions for examples, attributes, docs, and alternatives.
 
-```sh
-slack create my-starter-agent --template slack-samples/bolt-js-starter-agent --subdir openai-agents-sdk
-cd my-starter-agent
+---
+
+## What Compy Does
+
+Compy helps users:
+
+- Find the best Zeta component for a UI use case
+- Understand why that component is suitable
+- View example code directly in Slack
+- View component attributes directly in Slack
+- Open the relevant Zeta docs
+- See possible alternative components
+
+The goal is to make design-system usage faster, easier, and more consistent across teams.
+
+---
+
+## Example Interaction
+
+```text
+User:
+I need users to confirm deleting something
+
+Compy:
+Recommended component: Dialog
+
+A dialog is a good fit because the user needs to pause and confirm an important or destructive action before continuing.
+
+Good for:
+• confirming a destructive action
+• asking the user to make an important decision
+• showing a blocking warning
+
+[Show example] [Show attributes] [Open docs] [Show potential alternatives]
 ```
 
-</details>
+---
 
-<details><summary><strong>Using App Settings</strong></summary>
+## Current Features
 
-#### Create Your Slack App
+### Component Recommendations
 
-1. Open [https://api.slack.com/apps/new](https://api.slack.com/apps/new) and choose "From an app manifest"
-2. Choose the workspace you want to install the application to
-3. Copy the contents of [manifest.json](./manifest.json) into the text box that says `*Paste your manifest code here*` (within the JSON tab) and click _Next_
-4. Review the configuration and click _Create_
-5. Click _Install to Workspace_ and _Allow_ on the screen that follows. You'll then be redirected to the App Configuration dashboard.
+Compy reads structured component data from:
 
-#### Environment Variables
-
-Before you can run the app, you'll need to store some environment variables.
-
-1. Rename `.env.sample` to `.env`.
-2. Open your apps setting page from [this list](https://api.slack.com/apps), click _OAuth & Permissions_ in the left hand menu, then copy the _Bot User OAuth Token_ into your `.env` file under `SLACK_BOT_TOKEN`.
-
-```sh
-SLACK_BOT_TOKEN=YOUR_SLACK_BOT_TOKEN
+```text
+data/components.json
 ```
 
-3. Click _Basic Information_ from the left hand menu and follow the steps in the _App-Level Tokens_ section to create an app-level token with the `connections:write` scope. Copy that token into your `.env` as `SLACK_APP_TOKEN`.
+Each component can include:
 
-```sh
-SLACK_APP_TOKEN=YOUR_SLACK_APP_TOKEN
+- `id`
+- `name`
+- `description`
+- `useCases`
+- `example`
+- `attributes`
+- `slots`
+- `keywords`
+- `docsUrl`
+
+This allows the bot to recommend real components from the design system instead of inventing answers.
+
+---
+
+### AI Recommendation Layer
+
+Compy includes an optional AI recommendation layer.
+
+When enabled, the AI receives a simplified version of the component JSON and chooses the most suitable component ID for the user's request.
+
+The AI must return structured JSON:
+
+```json
+{
+  "componentId": "dialog",
+  "reason": "A dialog is suitable because the user needs to confirm a potentially destructive action before continuing."
+}
 ```
 
-#### Initializing the project
+The app then validates that the returned `componentId` actually exists in `components.json`.
 
-```sh
-git clone https://github.com/slack-samples/bolt-js-starter-agent.git my-starter-agent
-cd my-starter-agent/openai-agents-sdk
+If the AI is unavailable, disabled, or returns an invalid component ID, Compy falls back to the local matching system.
+
+This keeps the bot reliable while still allowing more natural AI-powered reasoning.
+
+---
+
+### Local Fallback Matching
+
+Compy also has a deterministic fallback matcher.
+
+This matcher scores components based on:
+
+- component ID
+- component name
+- description
+- use cases
+- keywords
+
+It also filters out common filler words using:
+
+```text
+data/stopWords.json
 ```
 
-</details>
+This helps avoid weak matches from phrases like:
 
-#### Install dependencies
+```text
+I need a component which lets users...
+```
 
-```sh
+---
+
+### Slack Buttons
+
+When Compy recommends a component, it displays interactive buttons:
+
+| Button | Purpose |
+|---|---|
+| Show example | Posts example component code in the thread |
+| Show attributes | Posts the component's available attributes |
+| Open docs | Opens the component documentation |
+| Show potential alternatives | Posts other possible matching components |
+
+---
+
+## Key Files
+
+### `data/components.json`
+
+Stores the component knowledge base used by both the AI layer and the fallback matcher.
+
+This is the main source of truth for Compy.
+
+---
+
+### `data/stopWords.json`
+
+Stores common words that should be ignored during local matching.
+
+Example words:
+
+```json
+[
+  "i",
+  "need",
+  "component",
+  "which",
+  "user",
+  "users"
+]
+```
+
+---
+
+### `services/componentService.js`
+
+Handles local component matching.
+
+Responsibilities:
+
+- Read `components.json`
+- Convert component data into searchable text
+- Filter user questions into important words
+- Score components
+- Return the best matching component
+- Return alternative components
+
+---
+
+### `services/aiComponentService.js`
+
+Handles optional AI-based component selection.
+
+Responsibilities:
+
+- Check whether AI recommendations are enabled
+- Send component data and the user request to OpenAI
+- Ask for a valid JSON response
+- Return the selected component ID and reason
+- Return `null` if AI is unavailable or fails
+
+---
+
+### `services/componentResponseService.js`
+
+Builds the final Slack response.
+
+Responsibilities:
+
+- Handle greetings and thanks
+- Try the AI recommendation layer
+- Fall back to local matching
+- Generate the recommendation message
+- Add Slack buttons
+- Store conversation history
+
+---
+
+### `listeners/actions/response-buttons.js`
+
+Handles Slack button clicks.
+
+Responsibilities:
+
+- Show example code
+- Show component attributes
+- Show alternative components
+
+---
+
+### `listeners/events/app-mentioned.js`
+
+Handles direct `@Compy` mentions in channels.
+
+Example:
+
+```text
+@Compy I need a save button
+```
+
+---
+
+### `listeners/events/message.js`
+
+Handles:
+
+- Direct messages
+- Replies in threads where Compy is already involved
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+SLACK_BOT_TOKEN=xoxb-your-token
+SLACK_APP_TOKEN=xapp-your-token
+OPENAI_API_KEY=your-openai-key
+USE_AI_RECOMMENDATIONS=false
+```
+
+### `USE_AI_RECOMMENDATIONS`
+
+Controls whether Compy should try to use the AI layer.
+
+```env
+USE_AI_RECOMMENDATIONS=false
+```
+
+Uses the local fallback matcher only.
+
+```env
+USE_AI_RECOMMENDATIONS=true
+```
+
+Tries the AI layer first, then falls back to local matching if AI fails.
+
+---
+
+## Installation
+
+Install dependencies:
+
+```bash
 npm install
 ```
 
-## Providers
+If using the OpenAI AI layer, make sure the OpenAI package is installed:
 
-### OpenAI Setup
-
-This app uses OpenAI's `gpt-4.1-mini` model through the OpenAI Agents SDK.
-
-1. Create an API key from your [OpenAI dashboard](https://platform.openai.com/api-keys).
-2. Rename `.env.sample` to `.env`.
-3. Save the OpenAI API key to `.env`:
-
-```sh
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+```bash
+npm install openai
 ```
 
-## Development
+---
 
-### Starting the app
+## Running the Bot
 
-<details><summary><strong>Using the Slack CLI</strong></summary>
+Start the local development server:
 
-#### Slack CLI
-
-```sh
-slack run
-```
-
-</details>
-
-<details><summary><strong>Using the Terminal</strong></summary>
-
-#### Terminal
-
-```sh
+```bash
 npm start
 ```
 
-</details>
+Or use the Slack CLI command provided by your Slack app setup.
 
-<details><summary><strong>Using OAuth HTTP Server (with ngrok)</strong></summary>
+---
 
-#### OAuth HTTP Server
+## Example Demo Questions
 
-This mode uses an HTTP server instead of Socket Mode, which is required for OAuth-based distribution.
+Use these to test the bot:
 
-1. Install [ngrok](https://ngrok.com/download) and start a tunnel:
-
-```sh
-ngrok http 3000
+```text
+I need a save button
+I need users to confirm deleting something
+I need users to choose from a list
+What should I use for no search results?
+I need to show a profile image
+I need to show upload progress
+I need a top navigation bar
+I need users to accept terms and conditions
+I need a small clickable chip
+I need to show that there is no data yet
+I need a component for global search
+I need something for choosing multiple options
+I need a blocking warning
+I need to show user initials
+I need something for task completion percentage
 ```
 
-2. Copy the `https://*.ngrok-free.app` URL from the ngrok output.
+---
 
-<details><summary><strong>Using Slack CLI</strong></summary>
+## Reliability Approach
 
-#### Slack CLI
+Compy is designed to avoid common AI reliability issues.
 
-3. Update `manifest.json` for HTTP mode:
-   - Set `socket_mode_enabled` to `false`
-   - Replace `ngrok-free.app` with your ngrok domain (e.g. `YOUR_NGROK_SUBDOMAIN.ngrok-free.app`)
+The AI layer does not directly control the final response. Instead:
 
-4. Create a new local dev app:
+1. The AI chooses a `componentId`
+2. The app checks that the ID exists in `components.json`
+3. The app uses the real component data to build the Slack response
+4. If anything fails, the local matcher is used instead
 
-```sh
-slack install -E local
-```
+This prevents hallucinated components and keeps the bot useful even when AI is disabled or unavailable.
 
-5. _(Slack CLI < v4.1.0 only)_ Enable MCP for your app:
-   - Run `slack app settings` to open your app's settings
-   - Navigate to **Agents & AI Apps** in the left-side navigation
-   - Toggle **Model Context Protocol** on
+---
 
-6. Update your `.env` OAuth environment variables:
-   - Run `slack app settings` to open App Settings
-   - Copy **Client ID**, **Client Secret**, and **Signing Secret**
-   - Update `SLACK_REDIRECT_URI` in `.env` with your ngrok domain
+## Future Improvements
 
-```sh
-SLACK_CLIENT_ID=YOUR_CLIENT_ID
-SLACK_CLIENT_SECRET=YOUR_CLIENT_SECRET
-SLACK_REDIRECT_URI=https://YOUR_NGROK_SUBDOMAIN.ngrok-free.app/slack/oauth_redirect
-SLACK_SIGNING_SECRET=YOUR_SIGNING_SECRET
-```
+Possible next steps:
 
-7. Start the app:
+- Add more Zeta components to `components.json`
+- Add support for MCP so external tools can query the design-system data
+- Add feedback buttons to improve recommendations over time
+- Add support for other design systems
 
-```sh
-slack run app-oauth.js
-```
+---
 
-8. Click the install URL printed in the terminal to install the app to your workspace via OAuth.
+## Built With
 
-</details>
-
-<details><summary><strong>Using the Terminal</strong></summary>
-
-#### Terminal
-
-3. Create your Slack app at [api.slack.com/apps/new](https://api.slack.com/apps/new) using [`manifest.json`](./manifest.json). Before pasting the manifest, set `socket_mode_enabled` to `false` and replace `ngrok-free.app` with your ngrok domain.
-
-4. Install the app to your workspace and copy the following values into your `.env`:
-   - **Signing Secret** — from _Basic Information_
-   - **Bot User OAuth Token** — from _OAuth & Permissions_
-   - **Client ID** and **Client Secret** — from _Basic Information_
-
-```sh
-SLACK_SIGNING_SECRET=YOUR_SIGNING_SECRET
-SLACK_BOT_TOKEN=xoxb-YOUR_BOT_TOKEN
-SLACK_CLIENT_ID=YOUR_CLIENT_ID
-SLACK_CLIENT_SECRET=YOUR_CLIENT_SECRET
-SLACK_REDIRECT_URI=https://YOUR_NGROK_SUBDOMAIN.ngrok-free.app/slack/oauth_redirect
-```
-
-Replace `your-subdomain` in `SLACK_REDIRECT_URI` with your ngrok subdomain.
-
-5. Start the app:
-
-```sh
-node app-oauth.js
-```
-
-6. Click the install URL printed in the terminal to install the app to your workspace via OAuth.
-
-</details>
-
-> **Note:** Each time ngrok restarts, it generates a new URL. You'll need to update the ngrok domain in `manifest.json`, `SLACK_REDIRECT_URI` in your `.env`, and re-install the app.
-
-</details>
-
-### Using the App
-
-Once the agent is running, there are several ways to interact:
-
-**App Home** — Open the agent in Slack and click the _Home_ tab. You'll see a welcome message with instructions on how to interact.
-
-**Direct Messages** — Open a DM with the agent. You'll see suggested prompts like _Write a Message_, _Summarize_, and _Brainstorm_ — pick one or type your own message. The agent replies in a thread. Send follow-up messages in the same thread and the agent will maintain the full conversation context.
-
-**Channel @mentions** — Invite the agent to a channel by typing `/invite @agent-name` in the message box, then @mention it followed by your message. The agent responds in a thread so the channel stays clean.
-
-**Assistant Panel** — Click _Add Agent_ in the top-right corner of Slack, select the agent from the list, then pick a suggested prompt or type a message.
-
-### Linting
-
-```sh
-# Run Biome for linting and formatting
-npm run lint
-
-# Auto-fix lint and format issues
-npm run lint:fix
-```
-
-### Testing
-
-```sh
-# Run unit tests
-npm test
-```
-
-## Project Structure
-
-### `manifest.json`
-
-`manifest.json` is a configuration for Slack apps. With a manifest, you can create an app with a pre-defined configuration, or adjust the configuration of an existing app.
-
-### `app.js`
-
-`app.js` is the entry point for the application and is the file you'll run to start the server. This project aims to keep this file as thin as possible, primarily using it as a way to route inbound requests.
-
-### `app-oauth.js`
-
-`app-oauth.js` is an alternative entry point that runs the app in HTTP mode instead of Socket Mode. This is intended for deployments that use OAuth for app distribution. See the OAuth HTTP Server section under Development for setup instructions.
-
-### `/listeners`
-
-Every incoming request is routed to a "listener". This directory groups each listener based on the Slack Platform feature used.
-
-**`/listeners/events`** — Handles incoming events:
-
-* `app-home-opened.js` — Publishes the App Home view with a welcome message and MCP status.
-* `app-mentioned.js` — Responds to @mentions in channels.
-* `message.js` — Responds to direct messages from users.
-* `assistant-thread-started.js` — Sets suggested prompts for assistant threads.
-
-**`/listeners/actions`** — Handles interactive components:
-
-* `feedback-buttons.js` — Handles thumbs up/down feedback on agent responses.
-
-**`/listeners/views`** — Builds Block Kit views:
-
-* `app-home-builder.js` — Constructs the App Home Block Kit view.
-* `feedback-builder.js` — Creates the feedback button block attached to responses.
-
-### `/agent`
-
-The `agent.js` file defines the OpenAI Agents SDK Agent with a system prompt, personality, and tool configuration.
-
-The `deps.js` file defines the `AgentDeps` class passed to the agent at runtime, providing access to the Slack client and conversation context.
-
-The `tools` directory contains one example tool (emoji reaction) defined using `tool()` from `@openai/agents`. Add your own tools to customize the agent for your use case.
-
-### `/thread-context`
-
-The `store.js` file implements an in-memory conversation history store, keyed by channel and thread. This enables multi-turn conversations where the agent remembers previous context within a thread. The store has TTL-based cleanup (24 hours) and a max entry limit (1000).
-
-## Troubleshooting
-
-### MCP Server connection error: `App is not enabled for Slack MCP server access`
-
-If you see an error like:
-
-```
-Error: Streamable HTTP error: Error POSTing to endpoint: {"jsonrpc":"2.0","id":null,"error":{"code":-32600,"message":"App is not enabled for Slack MCP server access. Please enable it here: https://api.slack.com/apps/YOUR_APP_ID/app-assistant"}}
-```
-
-This means the Slack MCP feature has not been enabled for your app. There is no manifest property for this yet, so it must be toggled on manually:
-
-1. Run `slack app settings` to open your app's settings page (or visit [api.slack.com/apps](https://api.slack.com/apps) and select your app)
-2. Navigate to **Agents & AI Apps** in the left-side navigation
-3. Toggle **Slack Model Context Protocol** on
+- Slack Bolt for JavaScript
+- Slack Block Kit
+- Node.js
+- OpenAI API
+- Zeta Design System component data
