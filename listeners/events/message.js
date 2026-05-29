@@ -1,6 +1,4 @@
-import { AgentDeps, runAgent } from '../../agent/index.js';
 import { conversationStore } from '../../thread-context/index.js';
-import { buildFeedbackBlocks } from '../views/feedback-builder.js';
 import { replyWithComponentRecommendation } from '../../services/componentResponseService.js';
 
 /**
@@ -61,22 +59,6 @@ export async function handleMessage({ client, context, event, logger, say, saySt
     // Get the recommended component based on the user's message
     return await replyWithComponentRecommendation({ say, channelId, threadTs, userText: text });
 
-    // Build input for the agent
-    /** @type {string | import('@openai/agents').AgentInputItem[]} */
-    const inputItems = history ? [...history, { role: 'user', content: text }] : text;
-
-    // Run the agent
-    const deps = new AgentDeps(client, userId, channelId, threadTs, event.ts, context.userToken);
-    const result = await runAgent(inputItems, deps);
-
-    // Stream response in thread with feedback buttons
-    const streamer = sayStream();
-    await streamer.append({ markdown_text: result.finalOutput });
-    const feedbackBlocks = buildFeedbackBlocks();
-    await streamer.stop({ blocks: feedbackBlocks });
-
-    // Store conversation history
-    conversationStore.setHistory(channelId, threadTs, result.history);
   } catch (e) {
     logger.error(`Failed to handle message: ${e}`);
     await say({

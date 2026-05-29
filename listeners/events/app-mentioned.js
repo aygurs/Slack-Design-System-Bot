@@ -1,6 +1,3 @@
-import { AgentDeps, runAgent } from '../../agent/index.js';
-import { conversationStore } from '../../thread-context/index.js';
-import { buildFeedbackBlocks } from '../views/feedback-builder.js';
 import { replyWithComponentRecommendation } from '../../services/componentResponseService.js';
 
 /**
@@ -43,30 +40,6 @@ export async function handleAppMentioned({ client, context, event, logger, say, 
     // Get the recommended component based on the user's question
     return await replyWithComponentRecommendation({ say, channelId, threadTs, userText: cleanedText });
 
-    conversationStore.setHistory(channelId, threadTs, [
-      { role: 'user', content: cleanedText },
-      { role: 'assistant', content: response }
-    ]);
-
-    return;
-
-    // Get conversation history
-    const history = conversationStore.getHistory(channelId, threadTs);
-    /** @type {string | import('@openai/agents').AgentInputItem[]} */
-    const inputItems = history ? [...history, { role: 'user', content: cleanedText }] : cleanedText;
-
-    // Run the agent
-    const deps = new AgentDeps(client, userId, channelId, threadTs, event.ts, context.userToken);
-    const result = await runAgent(inputItems, deps);
-
-    // Stream response in thread with feedback buttons
-    const streamer = sayStream();
-    await streamer.append({ markdown_text: result.finalOutput });
-    const feedbackBlocks = buildFeedbackBlocks();
-    await streamer.stop({ blocks: feedbackBlocks });
-
-    // Store conversation history
-    conversationStore.setHistory(channelId, threadTs, result.history);
   } catch (e) {
     logger.error(`Failed to handle app mention: ${e}`);
     await say({

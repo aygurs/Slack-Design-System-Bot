@@ -1,5 +1,6 @@
 import { conversationStore } from '../thread-context/index.js';
 import { recommendComponent, readComponentJson } from './componentService.js';
+import { getAiComponentRecommendation } from './aiComponentService.js';
 
 // Helper function to determine if the user's input is just a greeting
 function isOnlyGreeting(userText) {
@@ -113,8 +114,32 @@ export async function replyWithComponentRecommendation({ say, channelId, threadT
     } else if(isOnlyThanks(userText)) {
         response = "You're welcome! I'm here to help whenever you need! 😊";
     } else {
-        component = recommendComponent(userText);
-        response = generateComponentResponse(component, userText);
+        const components = readComponentJson();
+
+        // First try getting an AI recommendation
+        const aiRecommendation = await getAiComponentRecommendation({
+            userQuestion: userText,
+            components
+        });
+
+        // If AI gives a valid recommendation, use it. Otherwise fall back to keyword matching.
+        if (aiRecommendation) {
+            // Check if the componentId returned by AI actually exists in our components list
+            component = components.find((component) => {
+                return component.id === aiRecommendation.componentId;
+            }) || null;
+        }
+
+        // If component is found and AI provided a reason, use it. Otherwise fall back to the component description.
+        let aiReason = null;
+        if (component && aiRecommendation) {
+            aiReason = aiRecommendation.reason;
+        }
+        if (!component) {
+            component = recommendComponent(userText);
+        }
+
+        response = generateComponentResponse(component, userText, aiReason);
     }
 
     const blocks = [
@@ -216,7 +241,7 @@ export function generateAlternativeComponentsResponse(alternatives) {
 }
 
 /** Generates a response message based on the recommended component and the user's original question */
-export function generateComponentResponse(component, userQuestion) {
+export function generateComponentResponse(component, userQuestion, aiReason = null) {
 
     // If no good match is found, return a message saying so
     if (!component) {
@@ -237,7 +262,7 @@ export function generateComponentResponse(component, userQuestion) {
     return [
         `*Recommended component:* ${component.name}`,
         '',
-        component.description,
+        aiReason || component.description,
         '',
         '*Good for:*',
         topUseCases || 'I don\'t have any use cases listed for this component yet.',
