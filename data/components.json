@@ -84,7 +84,10 @@
       "primary action",
       "secondary action",
       "cta",
-      "call to action"
+      "call to action",
+      "click",
+      "clickable",
+      "interactive"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Buttons/Button/"
   },
@@ -200,7 +203,8 @@
       "decision",
       "blocking",
       "overlay",
-      "attention"
+      "attention",
+      "information"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Dialog/"
   },
@@ -284,6 +288,9 @@
         "list",
         "picker",
         "filter",
+        "search",
+        "sort",
+        "organize",
         "status",
         "category",
         "radio dropdown",
@@ -339,6 +346,7 @@
         "profile",
         "profile picture",
         "user",
+        "users",
         "user image",
         "initials",
         "person",
@@ -346,7 +354,10 @@
         "account",
         "contact",
         "badge",
-        "status"
+        "status",
+        "display",
+        "show",
+        "showing"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Avatar/"
     },
@@ -433,8 +444,13 @@
         "multi select",
         "select many",
         "toggle option",
+        "toggle",
+        "on off",
+        "enable disable",
         "terms",
         "agree",
+        "accept",
+        "opt in",
         "form control"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Checkbox/"
@@ -493,7 +509,10 @@
         "small action",
         "label",
         "tag",
-        "icon chip"
+        "badge",
+        "icon chip",
+        "action",
+        "filter"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/Chips/AssistChip/"
     },
@@ -559,13 +578,19 @@
         "empty",
         "no results",
         "no data",
+        "no content",
+        "error state",
+        "error",
+        "404",
         "first use",
+        "onboarding",
         "user cleared",
         "blank state",
         "empty list",
         "empty table",
         "nothing to show",
-        "clear filters"
+        "clear filters",
+        "nothing"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/EmptyState/"
     },
@@ -653,6 +678,7 @@
     "keywords": [
         "global header",
         "header",
+        "top bar",
         "top navigation",
         "navigation bar",
         "navbar",
@@ -660,9 +686,15 @@
         "logo",
         "search",
         "user profile",
+        "profile",
+        "account",
+        "settings",
         "app switcher",
         "global actions",
-        "persistent navigation"
+        "persistent navigation",
+        "navigation",
+        "navigate",
+        "menu"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/GlobalHeader/"
     },
@@ -728,14 +760,19 @@
         "loader",
         "wait",
         "waiting",
+        "pending",
+        "processing",
         "upload",
         "download",
         "percentage",
         "completion",
+        "complete",
         "indeterminate",
         "buffering",
         "process",
-        "task progress"
+        "task progress",
+        "status",
+        "in progress"
     ],
     "docsUrl": "https://design.zebra.com/docs/Components/ProgressIndicator/ProgressBar/"
     }

@@ -3,11 +3,30 @@ import path from 'node:path';
 
 // Get the path for the components.json file
 const componentJsonFilePath = path.join(process.cwd(), 'data', 'components.json');
+const stopWordsJsonFilePath = path.join(process.cwd(), 'data', 'stopWords.json');
 
 /** Reads the components.json file and returns the array of components */
 export function readComponentJson() {
     const file = fs.readFileSync(componentJsonFilePath, 'utf-8');
     return JSON.parse(file);
+}
+
+// Obtain the list of stop words from the JSON file
+function readStopWordsJson() {
+    const file = fs.readFileSync(stopWordsJsonFilePath, 'utf-8');
+    return JSON.parse(file);
+}
+
+// Obtain the most relevant words from the user's question by removing stop words and punctuation
+function getRelevantWords(userQuestion) {
+    const stopWords = readStopWordsJson();
+    const userQuestionLower = makeTextLowerCase(userQuestion);
+
+    return userQuestionLower
+        .replace(/[^\w\s-]/g, '')
+        .split(/\s+/)
+        .filter((word) => word.length > 2)
+        .filter((word) => !stopWords.includes(word));
 }
 
 // Turn user questions and component info into lowercase text
@@ -16,12 +35,11 @@ function makeTextLowerCase(text) {
 }
 
 // Converts the component object into a string we can search for matches against the user's question
+// Only searches id, name, and keywords - not description or useCases to avoid noisy matches
 function componentObjectToString(component) {
     const componentDetails = [
     component.id,
     component.name,
-    component.description,
-    ...(component.useCases || []),
     ...(component.keywords || [])
     ];
 
@@ -36,9 +54,9 @@ function calculateComponentMatchScore(component, userQuestion) {
     let score = 0;
 
     // Split the user's question into words
-    const userQuestionWords = userQuestionLower.split(/\s+/);
+    const relevantUserQuestionWords = getRelevantWords(userQuestion);
 
-    for (const word of userQuestionWords) {
+    for (const word of relevantUserQuestionWords) {
         if (componentDetailsString.includes(word)) {
             score += 1;
         }
@@ -76,11 +94,20 @@ export function componentsWithScores(userQuestion) {
     return matchingComponents;
 }
 
+/** Returns a list of alternative components for the user's question, excluding the selected component */
+export function getAlternativeComponents(userQuestion, selectedComponentId) {
+    const results = componentsWithScores(userQuestion);
+
+    return results
+        .filter((component) => component.id !== selectedComponentId)
+        .slice(0, 2);
+}
+
 /** Returns the single best matching component for the user's question, or null if no good match is found */
 export function recommendComponent(userQuestion) {
     const results = componentsWithScores(userQuestion);
 
-    if (results.length === 0 || results[0].score < 2) {
+    if (results.length === 0) {
         return null;
     }
 

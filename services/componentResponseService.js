@@ -156,7 +156,18 @@ export async function replyWithComponentRecommendation({ say, channelId, threadT
                         text: 'Open docs'
                     },
                     url: component.docsUrl,
-                    action_id: 'open_component_docs'
+                },
+                {
+                    type: 'button',
+                    text: {
+                        type: 'plain_text',
+                        text: 'Show potential alternatives'
+                    },
+                    action_id: 'show_component_alternatives',
+                    value: JSON.stringify({
+                        componentId: component.id,
+                        userText
+                    })
                 }
             ]
         });
@@ -172,6 +183,36 @@ export async function replyWithComponentRecommendation({ say, channelId, threadT
         { role: 'user', content: userText },
         { role: 'assistant', content: response },
     ]);
+}
+
+/** Generates a response message based on the alternative components */
+export function generateAlternativeComponentsResponse(alternatives) {
+    if (!alternatives || alternatives.length === 0) {
+        return "I couldn't find any good alternative components for this request.";
+    }
+
+    const alternativesText = alternatives
+        .map((component, index) => {
+            const useCases = (component.useCases || [])
+                .slice(0, 2)
+                .map((useCase) => `• ${useCase}`)
+                .join('\n');
+
+            return [
+                `*${index + 1}. ${component.name}*`,
+                component.description,
+                '',
+                '*Good for:*',
+                useCases || 'No use cases listed.'
+            ].join('\n');
+        })
+        .join('\n\n');
+
+    return [
+        '*Alternative components:*',
+        '',
+        alternativesText
+    ].join('\n');
 }
 
 /** Generates a response message based on the recommended component and the user's original question */

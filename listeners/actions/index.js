@@ -1,7 +1,8 @@
 import { handleFeedbackButton } from './feedback-buttons.js';
 import {
     handleShowComponentExample,
-    handleShowComponentAttributes
+    handleShowComponentAttributes,
+    handleShowComponentAlternatives
 } from './response-buttons.js';
 
 /**
@@ -12,4 +13,5 @@ import {
 export function register(app) {
   app.action('show_component_example', handleShowComponentExample);
   app.action('show_component_attributes', handleShowComponentAttributes);
+  app.action('show_component_alternatives', handleShowComponentAlternatives);
 }
