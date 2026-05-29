@@ -1,6 +1,7 @@
 import { conversationStore } from '../thread-context/index.js';
 import { recommendComponent, readComponentJson } from './componentService.js';
 
+// Helper function to determine if the user's input is just a greeting
 function isOnlyGreeting(userText) {
     const cleanedText = userText
         .toLowerCase()
@@ -18,6 +19,25 @@ function isOnlyGreeting(userText) {
 
     // Return boolean indicating if the cleaned text matches any of the greeting patterns
     return greetings.some((greeting) => greeting.test(cleanedText));
+}
+
+// Helper function to determine if the user's input is just a thanks expression
+function isOnlyThanks(userText) {
+    const cleanedText = userText
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .trim();
+
+    // Simple regex patterns to match common thanks expressions
+    const thanks = [
+        /^thanks?$/,
+        /^thank you$/,
+        /^thx$/,
+        /^ty$/
+    ];
+
+    // Return boolean indicating if the cleaned text matches any of the thanks patterns
+    return thanks.some((thank) => thank.test(cleanedText));
 }
 
 /** Reads the components.json file and returns the object for the component with the matching ID, or null if not found */
@@ -90,6 +110,8 @@ export async function replyWithComponentRecommendation({ say, channelId, threadT
             '• "I need to make a list of options for users to choose from"',
             '• "I need a save button"'
         ].join('\n');
+    } else if(isOnlyThanks(userText)) {
+        response = "You're welcome! I'm here to help whenever you need! 😊";
     } else {
         component = recommendComponent(userText);
         response = generateComponentResponse(component, userText);
